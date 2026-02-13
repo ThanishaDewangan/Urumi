@@ -1,0 +1,30 @@
+global:
+  baseDomain: localtest.me
+  storageClassName: ""
+
+dashboard:
+  image:
+    repository: myuser/store-platform-dashboard
+    tag: "0.1.0"
+    pullPolicy: Never
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: true
+    className: ""
+    host: dashboard.localtest.me
+
+backend:
+  image:
+    repository: myuser/store-platform-backend
+    tag: "0.1.0"
+    pullPolicy: Never
+  service:
+    type: ClusterIP
+    port: 4000
+  ingress:
+    enabled: true
+    className: ""
+    host: api.localtest.me
+

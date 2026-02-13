@@ -1,0 +1,32 @@
+dashboard:
+  enabled: true
+  image:
+    repository: your-docker-username/store-platform-dashboard
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: true
+    className: ""
+    host: dashboard.localtest.me
+
+backend:
+  enabled: true
+  image:
+    repository: your-docker-username/store-platform-backend
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: true
+    className: ""
+    host: api.localtest.me
+
+global:
+  baseDomain: localtest.me
+  storageClassName: standard
+

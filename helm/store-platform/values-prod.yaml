@@ -1,0 +1,65 @@
+global:
+  baseDomain: stores.example.com
+  storageClassName: local-path
+
+dashboard:
+  image:
+    repository: your-docker-username/store-platform-dashboard
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
+  replicas: 2
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: true
+    className: nginx
+    host: dashboard.stores.example.com
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/rate-limit: "100"
+      nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    tls:
+      - secretName: dashboard-tls
+        hosts:
+          - dashboard.stores.example.com
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+backend:
+  image:
+    repository: your-docker-username/store-platform-backend
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
+  replicas: 2
+  service:
+    type: ClusterIP
+    port: 4000
+  ingress:
+    enabled: true
+    className: nginx
+    host: api.stores.example.com
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/rate-limit: "100"
+      nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    tls:
+      - secretName: api-tls
+        hosts:
+          - api.stores.example.com
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  env:
+    MAX_STORES: "100"
+    PROVISIONING_TIMEOUT_MINUTES: "10"
+

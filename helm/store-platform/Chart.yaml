@@ -1,0 +1,7 @@
+apiVersion: v2
+name: store-platform
+description: Helm chart for the Urumi store provisioning platform (Round 1)
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+
