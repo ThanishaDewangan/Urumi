@@ -6,6 +6,7 @@ import { config } from "./config";
 import { storesRouter } from "./routes/stores";
 import { startStatusMonitor } from "./services/statusMonitor";
 import { metricsRouter } from "./routes/metrics";
+import { domainsRouter } from "./routes/domains";
 
 const app = express();
 
@@ -23,6 +24,7 @@ const apiLimiter = rateLimit({
 
 app.use("/stores", apiLimiter);
 app.use("/stores", storesRouter);
+app.use("/domains", domainsRouter);
 
 app.get("/healthz", (_req, res) => {
   res.json({ status: "ok" });

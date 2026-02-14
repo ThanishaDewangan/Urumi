@@ -6,6 +6,7 @@ import { Store, StoreEngine, StoreStatus } from "../types/store";
 import { createMedusaResources } from "./medusaProvisioner";
 import { logAuditEvent } from "./auditLogger";
 import { incrementStoresCreated, incrementStoresDeleted } from "./metricsService";
+import { acquireProvisioningLock, releaseProvisioningLock } from "./provisioningLock";
 
 const STORE_ID_ANNOTATION = "store.urumi.ai/id";
 const STORE_NAME_ANNOTATION = "store.urumi.ai/name";
@@ -94,6 +95,18 @@ export async function createStore(input: CreateStoreInput, clientIp?: string): P
   const nsName = namespaceForStore(id);
   const now = nowIso();
 
+  // Try to acquire provisioning lock to prevent race conditions
+  const lockHandle = await acquireProvisioningLock(id, clientIp);
+  
+  // Ensure lock is released on exit
+  let lockReleased = false;
+  const releaseLock = async () => {
+    if (!lockReleased) {
+      lockReleased = true;
+      await releaseProvisioningLock(id);
+    }
+  };
+
   const ns: V1Namespace = {
     apiVersion: "v1",
     kind: "Namespace",
@@ -116,6 +129,7 @@ export async function createStore(input: CreateStoreInput, clientIp?: string): P
   try {
     await core.createNamespace(ns);
   } catch (err: any) {
+    await releaseLock();
     if (err.response?.statusCode === 409) {
       throw Object.assign(new Error("Store namespace already exists"), { statusCode: 409 });
     }
@@ -156,9 +170,13 @@ export async function createStore(input: CreateStoreInput, clientIp?: string): P
     } catch (updateErr) {
       console.error(`Failed to update status for failed store ${id}:`, updateErr);
     }
+    await releaseLock();
     throw err;
   }
 
+  // Release lock and return store
+  await releaseLock();
+  
   const created = await core.readNamespace(nsName);
   const store = buildStoreFromNamespace(created.body);
   if (!store) {

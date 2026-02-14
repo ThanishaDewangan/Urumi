@@ -6,25 +6,25 @@ dashboard:
   image:
     repository: myuser/store-platform-dashboard
     tag: "0.1.0"
-    pullPolicy: Never
+    pullPolicy: IfNotPresent
   service:
     type: ClusterIP
     port: 80
   ingress:
     enabled: true
-    className: ""
+    className: nginx
     host: dashboard.localtest.me
 
 backend:
   image:
     repository: myuser/store-platform-backend
     tag: "0.1.0"
-    pullPolicy: Never
+    pullPolicy: IfNotPresent
   service:
     type: ClusterIP
     port: 4000
   ingress:
     enabled: true
-    className: ""
+    className: nginx
     host: api.localtest.me
 
