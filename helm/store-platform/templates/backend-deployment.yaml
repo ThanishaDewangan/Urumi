@@ -32,15 +32,15 @@ spec:
             - name: STORAGE_CLASS_NAME
               value: "{{ .Values.global.storageClassName }}"
             - name: MEDUSA_API_IMAGE
-              value: "{{ .Values.backend.medusaImages.api | default "medusajs/medusa:latest" }}"
+              value: "{{ .Values.backend.medusaImages.api }}"
             - name: MEDUSA_STOREFRONT_IMAGE
-              value: "{{ .Values.backend.medusaImages.storefront | default "medusajs/storefront:latest" }}"
+              value: "{{ .Values.backend.medusaImages.storefront }}"
             - name: POSTGRES_IMAGE
-              value: "{{ .Values.backend.medusaImages.postgres | default "postgres:15-alpine" }}"
+              value: "{{ .Values.backend.medusaImages.postgres }}"
             - name: MAX_STORES
-              value: "{{ .Values.backend.env.MAX_STORES | default "100" }}"
+              value: "{{ .Values.backend.env.MAX_STORES }}"
             - name: PROVISIONING_TIMEOUT_MINUTES
-              value: "{{ .Values.backend.env.PROVISIONING_TIMEOUT_MINUTES | default "10" }}"
+              value: "{{ .Values.backend.env.PROVISIONING_TIMEOUT_MINUTES }}"
           ports:
             - containerPort: 4000
               name: http
@@ -52,5 +52,7 @@ spec:
             httpGet:
               path: /healthz
               port: 4000
+          {{- if .Values.backend.resources }}
           resources:
             {{- toYaml .Values.backend.resources | nindent 10 }}
+          {{- end }}

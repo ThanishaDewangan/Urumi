@@ -4,9 +4,9 @@ global:
 
 dashboard:
   image:
-    repository: dthanisha/store-platform-dashboard  # REPLACE WITH YOUR USERNAME
+    repository: dthanisha/store-platform-dashboard
     tag: "0.1.0"
-    pullPolicy: Never  # For local development with kind/minikube
+    pullPolicy: IfNotPresent
   service:
     type: ClusterIP
     port: 80
@@ -17,9 +17,9 @@ dashboard:
 
 backend:
   image:
-    repository: dthanisha/store-platform-backend  # REPLACE WITH YOUR USERNAME
+    repository: dthanisha/store-platform-backend
     tag: "0.1.0"
-    pullPolicy: Never  # For local development with kind/minikube
+    pullPolicy: IfNotPresent
   service:
     type: ClusterIP
     port: 4000
@@ -31,3 +31,6 @@ backend:
     api: "medusajs/medusa:latest"
     storefront: "medusajs/storefront:latest"
     postgres: "postgres:15-alpine"
+  env:
+    MAX_STORES: "100"
+    PROVISIONING_TIMEOUT_MINUTES: "10"
