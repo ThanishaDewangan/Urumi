@@ -37,6 +37,10 @@ backend:
     tag: "0.1.0"
     pullPolicy: IfNotPresent
   replicas: 2
+  medusaImages:
+    api: "medusajs/medusa:latest"
+    storefront: "medusajs/storefront:latest"
+    postgres: "postgres:15-alpine"
   service:
     type: ClusterIP
     port: 4000
@@ -62,4 +66,3 @@ backend:
   env:
     MAX_STORES: "100"
     PROVISIONING_TIMEOUT_MINUTES: "10"
-

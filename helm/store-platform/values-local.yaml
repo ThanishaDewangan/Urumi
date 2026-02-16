@@ -4,9 +4,9 @@ global:
 
 dashboard:
   image:
-    repository: myuser/store-platform-dashboard
+    repository: dthanisha/store-platform-dashboard  # REPLACE WITH YOUR USERNAME
     tag: "0.1.0"
-    pullPolicy: IfNotPresent
+    pullPolicy: Never  # For local development with kind/minikube
   service:
     type: ClusterIP
     port: 80
@@ -17,9 +17,9 @@ dashboard:
 
 backend:
   image:
-    repository: myuser/store-platform-backend
+    repository: dthanisha/store-platform-backend  # REPLACE WITH YOUR USERNAME
     tag: "0.1.0"
-    pullPolicy: IfNotPresent
+    pullPolicy: Never  # For local development with kind/minikube
   service:
     type: ClusterIP
     port: 4000
@@ -27,4 +27,7 @@ backend:
     enabled: true
     className: nginx
     host: api.localtest.me
-
+  medusaImages:
+    api: "medusajs/medusa:latest"
+    storefront: "medusajs/storefront:latest"
+    postgres: "postgres:15-alpine"

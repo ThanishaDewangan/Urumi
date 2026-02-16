@@ -5,6 +5,8 @@ import { config } from "../config";
 export const domainsRouter = Router();
 
 // Store custom domain configuration
+// WARNING: This uses in-memory storage and will be lost on pod restart.
+// For production, use a persistent database (PostgreSQL, Redis, etc.)
 interface CustomDomain {
   storeId: string;
   domain: string;

@@ -18,8 +18,8 @@ import { getK8sClients } from "../k8s/client";
 import { config } from "../config";
 import { randomBytes } from "crypto";
 
-const MEDUSA_API_IMAGE = process.env.MEDUSA_API_IMAGE || "nginx:alpine";
-const MEDUSA_STOREFRONT_IMAGE = process.env.MEDUSA_STOREFRONT_IMAGE || "nginx:alpine";
+const MEDUSA_API_IMAGE = process.env.MEDUSA_API_IMAGE || "medusajs/medusa:latest";
+const MEDUSA_STOREFRONT_IMAGE = process.env.MEDUSA_STOREFRONT_IMAGE || "medusajs/storefront:latest";
 const POSTGRES_IMAGE = process.env.POSTGRES_IMAGE || "postgres:15-alpine";
 
 function generatePassword(): string {
@@ -257,9 +257,11 @@ export async function createMedusaResources(nsName: string, storeId: string) {
               image: MEDUSA_API_IMAGE,
               env: [
                 { name: "DATABASE_URL", valueFrom: { secretKeyRef: { name: "postgres-credentials", key: "DATABASE_URL" } } },
-                { name: "NODE_ENV", value: "production" }
+                { name: "NODE_ENV", value: "production" },
+                { name: "JWT_SECRET", value: generatePassword() },
+                { name: "COOKIE_SECRET", value: generatePassword() }
               ],
-              ports: [{ containerPort: 80 }],
+              ports: [{ containerPort: 9000 }],
               resources: {
                 requests: {
                   cpu: "200m",
@@ -272,15 +274,15 @@ export async function createMedusaResources(nsName: string, storeId: string) {
               },
               securityContext: nonRootSecurityContext,
               readinessProbe: {
-                httpGet: { path: "/", port: 80 },
-                initialDelaySeconds: 10,
-                periodSeconds: 5,
-                failureThreshold: 3
+                httpGet: { path: "/health", port: 9000 },
+                initialDelaySeconds: 30,
+                periodSeconds: 10,
+                failureThreshold: 6
               },
               livenessProbe: {
-                httpGet: { path: "/", port: 80 },
-                initialDelaySeconds: 30,
-                periodSeconds: 10
+                httpGet: { path: "/health", port: 9000 },
+                initialDelaySeconds: 60,
+                periodSeconds: 15
               }
             }
           ]
@@ -301,7 +303,7 @@ export async function createMedusaResources(nsName: string, storeId: string) {
     metadata: { name: "medusa-api" },
     spec: {
       selector: { app: "medusa-api" },
-      ports: [{ port: 80, targetPort: 80 }]
+      ports: [{ port: 80, targetPort: 9000 }]
     }
   };
 
@@ -424,7 +426,7 @@ export async function createMedusaResources(nsName: string, storeId: string) {
                   path: "/",
                   pathType: "Prefix",
                   backend: {
-                    service: { name: "medusa-api", port: { number: 80 } }
+                    service: { name: "medusa-api", port: { number: 9000 } }
                   }
                 }
               ]
