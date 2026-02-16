@@ -390,9 +390,18 @@ kind load docker-image your-docker-username/store-platform-backend:0.1.0 --name 
 # Check image pull policy in values
 ```
 
+## Deliverables (in this repo)
+
+- **README.md** – Local setup instructions, VPS/production-like setup (k3s), and how to create a store and place an order (see sections above).
+- **Source code** – Dashboard (`dashboard/`), backend API and provisioning/orchestration (`backend/`), including store lifecycle and K8s resource creation.
+- **Helm** – Chart in `helm/store-platform/` with `values-local.yaml` (local) and `values-prod.yaml` (production).
+- **System design & tradeoffs** – Short note in [SYSTEM_DESIGN_TRADEOFFS.md](SYSTEM_DESIGN_TRADEOFFS.md): architecture choice, idempotency/failure handling/cleanup, and what changes for production (DNS, ingress, storage class, secrets, etc.).
+
+For the **demo video**, use the checklist in [DEMO_VIDEO_REQUIREMENTS.md](DEMO_VIDEO_REQUIREMENTS.md) so the video covers system design, components, end-to-end flow, isolation/resources/reliability, security, scaling, abuse prevention, and local-to-VPS story.
+
 ## System Design & Tradeoffs
 
-See [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) for comprehensive coverage of:
+See [SYSTEM_DESIGN_TRADEOFFS.md](SYSTEM_DESIGN_TRADEOFFS.md) for a short note on architecture, idempotency/failure/cleanup, and production differences. For more detail (if present), see [ARCHITECTURE_DIAGRAMS.md](ARCHITECTURE_DIAGRAMS.md) and [CLOUD_DEPLOYMENT.md](CLOUD_DEPLOYMENT.md):
 - Architecture overview and component responsibilities
 - End-to-end flow diagrams
 - Isolation, resources, and reliability strategies
@@ -407,11 +416,8 @@ See [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) for comprehensive coverage of:
 
 ## Demo Video Guide
 
-See [DEMO_VIDEO_GUIDE.md](DEMO_VIDEO_GUIDE.md) for:
-- Complete demo video requirements checklist
-- Step-by-step demo script
-- Talking points for each section
-- What to show and explain
+- **[DEMO_VIDEO_REQUIREMENTS.md](DEMO_VIDEO_REQUIREMENTS.md)** – Checklist for what the video must cover (system design, flow, isolation, security, scaling, abuse prevention, local-to-VPS, deliverables).
+- **[DEMO_VIDEO_SCRIPT.md](DEMO_VIDEO_SCRIPT.md)** – Full script with talking points and [SHOW] cues for recording (~10–15 min).
 
 ## Project Structure
 
@@ -439,8 +445,10 @@ urumi/
 │       ├── values-local.yaml # Local cluster values
 │       ├── values-prod.yaml # Production values
 │       └── templates/       # K8s manifests
-├── README.md                # This file
-└── SYSTEM_DESIGN.md         # Architecture documentation
+├── README.md                     # This file
+├── DEMO_VIDEO_REQUIREMENTS.md    # Demo video checklist
+├── DEMO_VIDEO_SCRIPT.md          # Video script (talking points + cues)
+└── SYSTEM_DESIGN_TRADEOFFS.md    # Architecture & tradeoffs note
 ```
 
 ## License
